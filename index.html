@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>deck.gl ScatterplotLayer Example</title>
+
+    <!-- Unpckg Libraries -->
+    <!-- <script src="https://unpkg.com/deck.gl@^9.0.0/dist.min.js"></script>
+    <script src='https://unpkg.com/maplibre-gl@3.6.0/dist/maplibre-gl.js'></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src='https://www.unpkg.com/@tidyjs/tidy/dist/umd/tidy.min.js'></script> -->
+    <!-- <script src="https://unpkg.com/path-browserify@latest/index.js"></script> -->
+
+    <!-- Local JS Libraries -->
+    <script src="libs/deck.gl.9.0.0.dist.min.js"></script>
+    <script src="libs/maplibre-gl.3.6.0.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+
+</head>
+
+<body style="margin: 0; overflow: hidden">
+    <div id="uiRoot">
+
+        <!-- Map rendering container for deck.gl -->
+        <div id="deckMapContainer" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+
+        <!-- UI: Mode toggle (Noise vs Sources) -->
+        <div id="mapModeToggleContainer">
+            <div class="map-mode-toggle-title"></div>
+            <div id="mapModeToggleButtons">
+              <button id="mapModeButtonNoise" class="map-mode-toggle inactive"></button>
+              <button id="mapModeButtonSources" class="map-mode-toggle inactive"></button>
+            </div>
+          </div>
+
+        <!-- UI: Navigation (2D / Reset buttons) -->
+        <div id="navigationContainer">
+            <div class="navigation-title"></div>
+            <div class="navigation-buttons">
+                <!-- 2D Projection Button -->
+                <button id="twoDButton" class="interface-button" aria-label="Switch to 2D View">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        class="icon">
+                    <path d="M5 3v16h16"/>
+                    <!-- <path d="m5 19 6-6"/> -->
+                    <path d="m2 6 3-3 3 3"/>
+                    <path d="m18 16 3 3-3 3"/>
+                    </svg>
+                </button>
+                
+                <!-- Reset View Button -->
+                <button id="resetButton" class="interface-button" aria-label="Reset View">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor" class="icon">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0
+                            3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1
+                            13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- UI: Sound source toggles (Traffic, Voices, Birds) -->
+        <div id="soundSourceContainer">
+            <div class="title"></div>
+            <div id="soundSourceCheckbox" class="custom-checkbox-container">
+            <label class="custom-checkbox traffic">
+                <input type="checkbox" id="trafficCheckbox" checked />
+                <span class="checkmark"></span>
+            </label>
+        
+            <label class="custom-checkbox voices">
+                <input type="checkbox" id="voicesCheckbox" checked />
+                <span class="checkmark"></span>
+            </label>
+        
+            <label class="custom-checkbox birds">
+                <input type="checkbox" id="birdsCheckbox" checked />
+                <span class="checkmark"></span>
+            </label>
+            </div>
+        </div>
+
+        <!-- UI: Time period toggles (Before / Compare / After) -->
+        <div id="periodToggleContainer">
+            <div class="period-toggle-title"></div>
+            <div id="periodToggleButtons">
+                <button id="periodButtonBef" class="mode-toggle inactive"></button>
+                <button id="periodButtonCompare" class="mode-toggle inactive" aria-label="Compare">
+                    <svg class="mode-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path d="M2 4h9v1H3v15h8v1H2zm10 19h1V2h-1zM8.283 10.283l-.566-.566L4.934 12.5l2.783 2.783.566-.566L6.566 13H11v-1H6.566zM14 12h4.08l-1.54-1.54.92-.92 2.96 2.96-2.96 2.96-.92-.92L18.08 13H14v8h9V4h-9z"/>
+                      <path fill="none" d="M0 0h24v24H0z"/>
+                    </svg>
+                  </button>
+                <button id="periodButtonAft" class="mode-toggle inactive"></button>
+            </div>
+        </div>
+
+        <!-- UI: Language toggle (FR / ENG) -->
+        <div id="languageToggleContainer">
+            <div class="language-toggle-title"></div>
+            <div id="languageToggleButtons">
+              <button id="langButtonFR" class="language-toggle inactive">FR</button>
+              <button id="langButtonENG" class="language-toggle">ENG</button>
+            </div>
+        </div>
+
+        <!-- Tooltip container for rotate info -->
+        <div id="ctrlRotateTextBox"></div>
+
+        <!-- UI: Dropdown to select scenario -->
+        <select id="scenarioDropdown">
+            <option value="lockdown" selected></option>
+            <option value="daynight"> </option>
+            <option value="workday"></option>
+        </select>
+
+        <!-- UI: Time scale toggle (Hour / Day) -->
+        <div id="timeScaleToggleContainer">
+            <div class="view-mode-toggle-title">Time Scale</div>
+            <div id="timeScaleToggleButtons">
+            <button id="timeScaleButtonHour" class="view-mode-toggle"></button>
+            <button id="timeScaleButtonDay" class="view-mode-toggle inactive"></button>
+            </div>
+        </div>
+
+        <!-- TUTORIAL Popup -->
+        <div id="tutorialPopup">
+            <!-- Tutorial step buttons -->
+            <div class="tutorial-steps">
+                <button class="step-button active" data-step="i">i</button>
+                <button class="step-button" data-step="1" >Q1</button>
+                <button class="step-button" data-step="2" >Q2</button>
+                <button class="step-button" data-step="3" >Q3</button>
+                <button class="step-button" data-step="4" >Q4</button>
+                <button class="step-button" data-step="5" >Q5</button>
+            </div>
+            <div class="tutorial-title"></div>
+            <div class="tutorial-content">
+                <!-- Dynamic content will be inserted here via JS -->
+            </div>
+
+            <!-- Pagination controls -->
+            <div class="tutorial-pagination">
+                <div class="tutorial-page-buttons">
+                <button id="tutorialPrev" class="tutorial-nav-button">&lt;</button>
+                <span class="tutorial-page-indicator">1/4</span>
+                <button id="tutorialNext" class="tutorial-nav-button">&gt;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutorial toggle switch -->
+        <div id="tutorialToggleContainer">
+            <div id="tutorialToggleTitle" class="tutorial-toggle-title"></div>
+            <label class="switch">
+                <input type="checkbox" id="tutorialToggle">
+                <span class="slider round"></span>
+            </label>
+        </div>
+
+        <!-- Overlay that blocks all interaction (optional use during tutorial) -->
+        <div id="interactionBlocker" style="
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 99999;
+            background: transparent;
+            cursor: not-allowed;
+            display: none;
+        "></div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

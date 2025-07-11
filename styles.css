@@ -1,0 +1,952 @@
+@font-face {
+    font-family: 'Montserrat';
+    src: url('./fonts/Montserrat/Montserrat-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900; /* Supports variable weights */
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Montserrat';
+    src: url('./fonts/Montserrat/Montserrat-Italic-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: italic;
+  }
+
+/* GLOBAL FIX — ensures consistency across all elements */
+*, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#uiRoot {
+  position: absolute;
+  top: 0; left: 0;
+  width: 2086px;
+  height: 1080px;
+  transform-origin: top left;
+}
+
+/* 
+ * GLOWING EFFECT
+ */
+
+ @keyframes glowBorder {
+  0% {
+    box-shadow: 0 0 0px rgba(110, 91, 182, 0);
+    border-color: transparent;
+  }
+  50% {
+    box-shadow:
+      0 0 20px rgba(110, 91, 182, 0.6),
+      0 0 40px rgba(110, 91, 182, 0.9),
+      0 0 60px rgba(110, 91, 182, 1);
+    border-color: #6e5bb6;
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(110, 91, 182, 0);
+    border-color: transparent;
+  }
+}
+
+.glow-effect {
+  animation: glowBorder 1.5s ease-in-out infinite;
+  border: 0px solid transparent;
+  border-radius: 100px;
+}
+
+
+
+/* 
+ * UI CONTAINER
+ */
+
+#uiContainer {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 9999;
+  min-width: 450px; /* 👈 sets a sensible base width */
+  max-width: 800px;
+  min-height: 550px; /* 👈 sets a sensible base width */
+  max-height: 550px;
+  height: calc(100% - 20px); /* 🔧 avoid clipping on bottom */
+  background-color: #fcfcfc; /* 👈 matches the rest of the UI elements */
+  padding: 20px;
+  border-radius: 0 20px 20px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* 👈 subtle shadow for consistency */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+
+/* 
+ * RESET BUTTON / 2D BUTTON
+ */
+
+/* Container */
+#navigationContainer {
+    position: absolute;
+    top: 190px;
+    left: 10px;
+    z-index: 999;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+    height: fit-content;
+  }
+  
+  .navigation-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    padding-left: 5px;
+    margin-bottom: 10px;
+  }
+  
+  /* Flex row for the buttons */
+  .navigation-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+  
+  /* Button styles */
+  .interface-button {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    padding: 6px 12px;
+    background-color: #0e0e0e;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+    position: static;
+  }
+  
+  .interface-button:hover {
+    background-color: #4e4e4e;
+  }
+  
+  .interface-button:active {
+    transform: scale(0.97);
+  }
+  
+  .interface-button svg.icon {
+    width: 24px;
+    height: 24px;
+    stroke: white;
+  }
+  
+  .interface-button:hover {
+    background-color: #4e4e4e;
+  }
+  
+  .interface-button:active {
+    transform: scale(0.97);
+  }
+  
+  /* Positioning */
+  /* #twoDButton {
+    left: 15px;
+    top: 190px;
+  }
+  
+  #resetButton {
+    left: 95px;
+    top: 190px;
+  } */
+  
+  /* #tutorialButton {
+    position: absolute;
+    top: 50px;  
+    left: 200px;
+    z-index: 1000;
+  } */
+
+
+/* 
+ * SHIFT ROTATE TEXT
+ */
+
+ #ctrlRotateTextBox {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 1000;
+    background-color: #ffffff;
+    color: #333;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 2000;
+    padding: 12px 18px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    border-left: 6px solid #6e5bb6; /* matches your purple theme */
+    max-width: 4000px;
+    line-height: 1.4;
+  }
+  
+/* ================================
+   VIEW MODE TOGGLE (Header Tabs)
+   ================================ */
+
+   #timeScaleToggleContainer {
+    position: absolute;
+    top: 10px;               /* Directly above #twoDContainer */
+    right: 10px;
+    z-index: 2001;           /* Slightly above the 2D container */
+  
+    background-color: #f0f0f0;
+    border-radius: 12px 12px 0 0; /* Rounded top corners only */
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: none;
+    width: 400px;
+    box-sizing: border-box;
+  }
+
+  .view-mode-toggle-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    padding-left: 5px;
+  }
+  
+  #timeScaleToggleButtons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .view-mode-toggle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #616161;
+    color: #ffffff;
+    cursor: pointer;
+    flex: 1; /* Fill equally */
+    text-align: center;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .view-mode-toggle:hover {
+    background-color: #4e4e4e;
+  }
+  
+  .view-mode-toggle.inactive {
+    background-color: #ffffff;
+    color: #868686;
+    font-weight: normal;
+  }
+  
+  /* ================================
+     2D PROJECTION WINDOW (Main Body)
+     ================================ */
+  
+  #twoDContainer {
+    position: absolute;
+    top: 100px;             /* Sits right below the toggle container */
+    right: 10px;
+    width: 400px;
+    height: 300px;
+    background-color: white;
+    border: 1px solid #ccc;
+    z-index: 2000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 0 0 12px 12px;  /* Only bottom rounded */
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  
+/* 
+ * PERIOD DROPDOWN
+ */
+
+ #scenarioDropdown {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10000;
+    padding: 12px 20px;
+    font-size: 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    color: #333;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 16px;
+    padding-right: 40px;
+    /* Uncomment to make it hidden by default */
+    /* display: none;  */
+  }
+  
+  #scenarioDropdown option {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+
+/* 
+ * COMPARE MODE
+ */
+ .custom-checkbox.compare {
+    position: absolute;
+    top: 220px;
+    left: 130px;
+    z-index: 10000;
+    background-color: #ffffff;
+    color: #000000;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    padding: 12px;
+    border-radius: 12px;
+    /* font-weight: bold; */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    user-select: none;
+    
+    width: max-content;
+    max-width: 220px; /* ✅ Prevents oversizing */
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .custom-checkbox.compare input {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+  
+  .custom-checkbox.compare .checkmark {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background-color: #ccc;
+    display: inline-block;
+    position: relative;
+    flex-shrink: 0;
+  }
+  
+  .custom-checkbox.compare input:checked + .checkmark {
+    background-color: #444;
+  }
+  
+  .custom-checkbox.compare input:checked + .checkmark::after {
+    content: "✓";
+    position: absolute;
+    left: 6px;
+    top: 1px;
+    font-size: 20px;
+    color: white;
+  }
+
+/* 
+ * MAP MODE CHECKBOX
+ */
+
+ #mapModeToggleContainer {
+  position: absolute;
+  top: 400px;
+  left: 10px;
+  z-index: 10000;
+  
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  padding: 10px 10px; /* ⬅️ 10px padding left & right */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Shrinks to fit content */
+  /* display: inline-block;  */
+  /* Uncomment to make it hidden by default */
+  /* display: none; */
+}
+
+.map-mode-toggle-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  padding-left: 5px;
+}
+
+#mapModeToggleButtons {
+  display: flex;
+  gap: 10px;
+  position: static; /* Let it be contained by #periodToggleContainer */
+}
+
+.map-mode-toggle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: #616161;
+  color: #ffffff;
+  cursor: pointer;
+  width: 180px;
+  text-align: center;
+}
+
+.map-mode-toggle.inactive {
+  background-color: #ffffff;
+  color: #868686;
+  font-weight: normal;
+}
+
+
+/* 
+ * SOUND SOURCES CHECKBOXES
+ */
+
+/* === SOUND SOURCES CONTAINER === */
+#soundSourceContainer {
+    font-family: 'Montserrat', sans-serif;
+    position: absolute;
+    /* Position if Map Mode */
+    top: 500px;
+    /* Position if no Map Mode */
+    /* top: 310px; */
+    left: 10px;
+    z-index: 10000;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  
+    display: inline-block;
+    max-width: 100%;
+  }
+  
+  /* === TITLE === */
+  #soundSourceContainer .title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: black;
+  
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* === CHECKBOX CONTAINER === */
+  .custom-checkbox-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 18px;
+    width: max-content; /* 🔥 Only as wide as needed for the largest checkbox */
+  }
+  
+  /* === BASE STYLES FOR CUSTOM CHECKBOXES === */
+  .custom-checkbox {
+    display: flex;
+    align-items: center;
+    padding: 8px 15px 8px 8px; /* top right bottom left */
+    border-radius: 12px;
+    /* font-weight: bold; */
+    cursor: pointer;
+    user-select: none;
+    color: black;
+  
+    width: 100%; /* 🔒 Match the width of the widest .custom-checkbox */
+    box-sizing: border-box;
+  }
+  
+  .custom-checkbox input {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+  
+  .custom-checkbox .checkmark {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    margin-right: 10px;
+    flex-shrink: 0;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .custom-checkbox input:checked + .checkmark::after {
+    content: "✓";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    font-size: 22px;
+    color: white;
+  }
+  
+  /* === PER-CATEGORY COLOR STYLES === */
+  .custom-checkbox.traffic {
+    background-color: #e4e4e4;
+  }
+  .custom-checkbox.traffic input + .checkmark {
+    background-color: var(--color-traffic-light);
+  }
+  .custom-checkbox.traffic input:checked + .checkmark {
+    background-color: var(--color-traffic);
+  }
+  
+  .custom-checkbox.voices {
+    background-color: #e4e4e4;
+  }
+  .custom-checkbox.voices input + .checkmark {
+    background-color: var(--color-voices-light);
+  }
+  .custom-checkbox.voices input:checked + .checkmark {
+    background-color: var(--color-voices);
+  }
+  
+  .custom-checkbox.birds {
+    background-color: #e4e4e4;
+  }
+  .custom-checkbox.birds input + .checkmark {
+    background-color: var(--color-birds-light);
+  }
+  .custom-checkbox.birds input:checked + .checkmark {
+    background-color: var(--color-birds);
+  }
+  
+  
+
+/* BEF / AFT MODE */
+
+#periodToggleContainer {
+  position: absolute;
+  top: 300px;
+  left: 10px;
+  z-index: 10000;
+
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  padding: 10px 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  display: inline-block;
+}
+
+.period-toggle-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  padding-left: 5px;
+}
+
+#periodToggleButtons {
+  display: flex;
+  gap: 10px;
+  position: static;
+}
+
+.mode-toggle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: #616161;
+  color: #ffffff;
+  cursor: pointer;
+  width: 190px;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.mode-toggle.inactive {
+  background-color: #ffffff;
+  color: #868686;
+  font-weight: normal;
+}
+
+/* Subtext under main label (date range) */
+.mode-subtext {
+  font-size: 12px;
+  font-weight: normal;
+  color: #d1d5db;
+  margin-top: 4px;
+  line-height: 1.2;
+}
+
+.mode-toggle.inactive .mode-subtext {
+  color: #b0b0b0;
+}
+
+/* Compare button specifics */
+#periodButtonCompare {
+  width: 80px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mode-toggle .mode-icon {
+  width: 23px;
+  height: 23px;
+  fill: currentColor;
+}
+
+
+
+
+
+
+
+
+/* 
+ * 2D PROJECTION BUTTON --> OBSOLETE
+ */
+
+ #twoDProjButton {
+    position: absolute;
+    left: 1300px;
+    top: 10px;
+    z-index: 1000;
+    padding: 10px 20px;
+    font-size: 32px;
+}
+
+/* 
+ * NOISE LEVEL CHECKBOX --> OBSOLETE
+ */
+
+
+ #noiseLevelCheckbox {
+    position: absolute;
+    top: 80px;
+    left: 10px;
+    z-index: 10000;
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 18px;
+    display: none; /* 🔥 Hidden by default */
+    flex-direction: column;
+    gap: 10px;
+}
+
+#noiseLevelCheckbox label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.leq {
+    background-color: rgba(186, 85, 211, 1); 
+}
+
+.laeq {
+    background-color: rgba(186, 85, 211, 1); 
+}
+
+#noiseLevelCheckbox input {
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+/* 
+ * TUTORIAL
+ */
+
+ #tutorialPopup {
+  position: absolute;
+  top: 10px;
+  right: 450px;
+  z-index: 2000;
+  width: 850px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 5px 10px;
+  font-family: 'Montserrat', sans-serif;
+  color: #333;
+  line-height: 1.6;
+
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tutorial-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #a855f7; /* Matches your purple accent */
+}
+
+.tutorial-content {
+  font-size: 16px;
+}
+
+.tutorial-steps {
+  display: flex;
+  justify-content: space-between; /* Spread evenly */
+  gap: 10px;
+  margin-top: 15px;
+  width: 100%; /* Take full width of the popup */
+}
+
+.step-button {
+  flex: 1; /* Distribute evenly */
+  height: 40px;
+  background-color: #c7bff0;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+
+.step-button:hover {
+  background-color: #b2a5e0;
+}
+
+.step-button:active {
+  transform: scale(0.96);
+}
+
+.step-button.active {
+  background-color: #6e5bb6;
+}
+
+.step-button:disabled {
+  background-color: #e5e5e5;
+  color: #999;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.tutorial-pagination {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ✅ center horizontally */
+  margin-top: 10px;
+  gap: 6px;
+}
+
+.tutorial-page-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center; /* ensures vertical centering with buttons */
+}
+
+.tutorial-page-indicator {
+  font-size: 16px;
+  font-weight: bold;
+  color: #6e5bb6;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  min-width: 50px; /* keeps space consistent */
+}
+
+.tutorial-nav-button {
+  width: 40px;
+  height: 40px;
+  background-color: #f0f0f0;
+  color: #333;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tutorial-nav-button:hover:not(:disabled) {
+  background-color: #d4d4d4;
+}
+
+.tutorial-nav-button:disabled {
+  background-color: #e5e5e5;
+  color: #999;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+/* 
+ * TOTORIAL TOGGLE
+ */
+
+#tutorialToggleContainer {
+  position: absolute;
+  top: 100px;
+  left: 10px; /* Positioned to the left */
+  z-index: 1000;
+  
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Title inside the toggle container */
+.tutorial-toggle-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Switch base style */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 30px;
+}
+
+/* Hide default checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+/* When toggled ON */
+input:checked + .slider {
+  background-color: #6e5bb6; /* Same purple you use elsewhere */
+}
+
+input:checked + .slider:before {
+  transform: translateX(50px);
+}
+
+/* Rounded slider */
+.slider.round {
+  border-radius: 34px;
+}
+
+
+/* LANGUAGE TOGGLE */
+
+#languageToggleContainer {
+  position: absolute;
+  top: 10px; /* adjust position as needed */
+  left: 10px;
+  z-index: 10000;
+
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  padding: 10px 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  display: inline-block;
+}
+
+.language-toggle-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  padding-left: 5px;
+}
+
+#languageToggleButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.language-toggle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 6px 12px;       /* 👈 tighter padding */
+  border: none;
+  border-radius: 8px;
+  background-color: #616161;
+  color: #ffffff;
+  cursor: pointer;
+  width: auto;             /* 👈 let the size adapt to text */
+  min-width: 60px;         /* 👈 prevent being too small */
+  text-align: center;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.language-toggle.inactive {
+  background-color: #ffffff;
+  color: #868686;
+  font-weight: normal;
+}
