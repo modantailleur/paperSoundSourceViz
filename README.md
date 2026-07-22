@@ -8,6 +8,12 @@ Our interactive web visualization of urban soundscapes is developed for the stud
 
 PAPER
 
-🔗 **[Launch the Visualization](https://modantailleur.github.io/paperSoundSourceViz/)**
+Click on the **"Website"** button of this repository to access the visualization. 
+
+<!-- 🔗 **[Launch the Visualization](https://modantailleur.github.io/paperSoundSourceViz/)** -->
+
+## 🎬 Video Presentation
+
+https://github.com/modantailleur/paperSoundSourceViz/raw/master/video/soundsourceviz_presentation.mp4
 
 
