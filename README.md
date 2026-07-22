@@ -14,8 +14,8 @@ Click on the **"Website"** button of this repository to access the visualization
 
 ## 🎬 Video Presentation
 
-<video src="https://raw.githubusercontent.com/modantailleur/paperSoundSourceViz/master/video/soundsourceviz_presentation.mp4" controls width="700">
-  Your browser does not support the video tag. <a href="video/soundsourceviz_presentation.mp4">Download the video</a> instead.
-</video>
+https://github.com/user-attachments/assets/7d5c20a1-c695-4e39-9424-4bc5d0e57b56
+
+
 
 
